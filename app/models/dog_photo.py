@@ -1,6 +1,8 @@
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.sql import func
+from sqlalchemy.dialects.postgresql import JSON
 from app.config.database import Base
+from pgvector.sqlalchemy import Vector
 
 
 class DogPhoto(Base):
@@ -14,3 +16,4 @@ class DogPhoto(Base):
     file_size_bytes = Column(Integer, nullable=False)
     file_extension = Column(String(10), nullable=False)
     uploaded_at = Column(DateTime, default=func.now())
+    embedding = Column(Vector(1024), nullable=False)  # Vector embedding for biometric identification

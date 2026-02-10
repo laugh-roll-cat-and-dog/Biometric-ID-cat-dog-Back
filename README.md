@@ -2,6 +2,8 @@
 
 A FastAPI-based backend service for managing dog photos and biometric identification.
 
+## Threshold is in searchbyinage.py line 116
+
 ## Project Structure
 
 ```
