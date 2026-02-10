@@ -19,7 +19,7 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-ai/
+app/ai/
 
 # Virtual Environment
 .venv/
