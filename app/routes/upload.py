@@ -7,6 +7,7 @@ from app.config.database import SessionLocal
 from app.config.settings import settings
 from app.models import Dog, DogPhoto
 from app.utils.file_handler import detect_image_type, save_file
+import os
 
 import torch
 import torchvision.transforms as transforms
@@ -14,6 +15,9 @@ from PIL import Image
 from ..network.network import Network_ConvNext
 import torch.nn.functional as F
 
+from app.utils.embedding import embed_image
+from app.utils.crop import crop_image
+import cv2
 
 router = APIRouter()
 
@@ -73,6 +77,10 @@ async def upload_photo(
         dog_folder.mkdir(parents=True, exist_ok=True)
         print(f"[INFO] Created/verified dog folder: {dog_folder}")
 
+        nose_folder = settings.BASE_UPLOAD_DIR / foldername / "nose"
+        nose_folder.mkdir(parents=True, exist_ok=True)
+        print(f"[INFO] Created/verified nose folder: {nose_folder}")
+
         # Process each image and link to the same dog
         for image in images:
             content_type = image.content_type or ""
@@ -91,32 +99,31 @@ async def upload_photo(
             print(f"[INFO] File renamed to final destination: {destination}")
 
             #make embedding vector for image
-
-            # Load model (example with ConvNext)
-            model = Network_ConvNext('dino', 'sb')
-            model.load_state_dict(torch.load(f"./app/ai/dino_main.pt", map_location=torch.device('cpu')))
-            model.eval()
-
-            gallery_transforms = transforms.Compose([
-                transforms.Resize((224, 224)),
-                transforms.ToTensor(),
-                transforms.Normalize(
-                    mean=[0.485, 0.456, 0.406],
-                    std=[0.229, 0.224, 0.225]
-                )
-            ])
-
-            # Process single image directly
-            image = Image.open(destination).convert("RGB")
-            image_tensor = gallery_transforms(image)
-            image_batch = image_tensor.unsqueeze(0)  # Add batch dimension
-
-            # Get embedding
-            emb = None
-            with torch.no_grad():
-                emb = model(image_batch)
             
+            emb = embed_image(destination)
             print(f"[INFO] Embedding generated: {emb}")
+
+            # Crop image to get nose region
+            nose_crop = crop_image(destination)
+            print(f"[INFO] Image cropped: {nose_crop}")
+
+            # Save cropped nose image if detected
+            nose_destination = None
+            nose_emb = None
+            if nose_crop is not None:
+                nose_filename = f"{uuid.uuid4().hex}_nose.jpeg"
+                nose_destination = nose_folder / nose_filename
+                
+                # Convert BGR to RGB and save using PIL
+                nose_rgb = cv2.cvtColor(nose_crop, cv2.COLOR_BGR2RGB)
+                nose_pil = Image.fromarray(nose_rgb)
+                nose_pil.save(str(nose_destination), 'JPEG')
+                print(f"[INFO] Nose saved to: {nose_destination}")
+
+                nose_emb = embed_image(nose_destination)
+                print(f"[INFO] Nose embedding generated: {nose_emb}")
+            else:
+                print(f"[WARN] No nose detected in image")
 
 
 
@@ -127,7 +134,9 @@ async def upload_photo(
                 file_path=str(destination),
                 file_size_bytes=bytes_written,
                 file_extension=extension,
-                embedding=F.normalize(emb[0], p=2, dim=0)
+                embedding=F.normalize(emb[0], p=2, dim=0),
+                cropped_nose_path=str(nose_destination) if nose_destination else None,
+                nose_embedding=F.normalize(nose_emb[0], p=2, dim=0) if nose_emb is not None else None
             )
             db.add(new_photo)
             db.commit()

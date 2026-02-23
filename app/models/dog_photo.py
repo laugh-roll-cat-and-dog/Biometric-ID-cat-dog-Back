@@ -17,3 +17,5 @@ class DogPhoto(Base):
     file_extension = Column(String(10), nullable=False)
     uploaded_at = Column(DateTime, default=func.now())
     embedding = Column(Vector(1024), nullable=False)  # Vector embedding for biometric identification
+    cropped_nose_path = Column(String(500), nullable=True)  # Path to cropped nose image
+    nose_embedding = Column(Vector(1024), nullable=True)  # Embedding of cropped nose

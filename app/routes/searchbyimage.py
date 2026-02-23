@@ -6,8 +6,10 @@ from app.config.database import SessionLocal
 from app.config.settings import settings
 from app.models import Dog, DogPhoto
 from app.utils.file_handler import detect_image_type, save_file
+from app.utils.crop import crop_image
 
 import torch
+import cv2
 import torchvision.transforms as transforms
 from PIL import Image
 from torch.utils.data import Dataset, DataLoader
@@ -33,8 +35,22 @@ async def search_by_image(image: UploadFile = File(...)) -> JSONResponse:
     bytes_written = await save_file(image, temp_path)
     
     try:
-        # Detect image type
+        # Detect image type and rename with proper extension
         extension = detect_image_type(temp_path)
+        proper_temp_path = temp_path.with_suffix(f".{extension}")
+        temp_path.rename(proper_temp_path)
+        temp_path = proper_temp_path
+        
+        # Crop uploaded image to get nose region
+        nose_crop = crop_image(temp_path)
+        if nose_crop is None:
+            raise HTTPException(status_code=400, detail="No nose detected in uploaded image. Please upload a clear image of a dog's face.")
+        
+        # Save cropped nose temporarily
+        nose_temp_path = Path("/tmp") / f"{uuid.uuid4().hex}_nose.jpg"
+        nose_rgb = cv2.cvtColor(nose_crop, cv2.COLOR_BGR2RGB)
+        nose_pil = Image.fromarray(nose_rgb)
+        nose_pil.save(str(nose_temp_path), 'JPEG')
         
         # Load model
         model = Network_ConvNext('dino', 'sb')
@@ -51,13 +67,17 @@ async def search_by_image(image: UploadFile = File(...)) -> JSONResponse:
             )
         ])
         
-        # Generate embedding for uploaded image
-        img = Image.open(temp_path).convert("RGB")
+        # Generate embedding for cropped nose
+        img = Image.open(nose_temp_path).convert("RGB")
         img_tensor = gallery_transforms(img)
         img_batch = img_tensor.unsqueeze(0)
         
         with torch.no_grad():
             query_embedding = model(img_batch)[0]
+        
+        # Clean up temporary nose file
+        if nose_temp_path.exists():
+            nose_temp_path.unlink()
         
         print(f"[INFO] Query embedding generated")
         
@@ -82,22 +102,23 @@ async def search_by_image(image: UploadFile = File(...)) -> JSONResponse:
             
             results = []
             for photo in all_photos:
-                # Convert embedding to tensor if needed
-                photo_embedding = torch.tensor(photo.embedding, dtype=torch.float32).unsqueeze(0)
-                # query_emb = query_embedding.unsqueeze(0)
+                # Skip photos without nose embeddings
+                if photo.nose_embedding is None:
+                    continue
+                    
+                # Convert nose embedding to tensor
+                photo_embedding = torch.tensor(photo.nose_embedding, dtype=torch.float32).unsqueeze(0)
                 query_emb = F.normalize(query_embedding, p=2, dim=0)
-                print(f"[Info] Normalized query embedding: {query_emb}")
                 
                 # Calculate cosine similarity
                 similarity = torch.matmul(query_emb, photo_embedding.T)
-
-                # similarity = cosine_similarity(query_emb, photo_embedding).item()
                 
                 results.append({
                     "photo_id": photo.id,
                     "dog_id": photo.dog_id,
                     "filename": photo.filename,
                     "file_path": photo.file_path,
+                    "cropped_nose_path": photo.cropped_nose_path,
                     "similarity_score": float(similarity)
                 })
             
