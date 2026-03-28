@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: 100.97.74.126:5000/whatthedog-back:latest
+          image: 192.168.1.57:5000/whatthedog-back:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
