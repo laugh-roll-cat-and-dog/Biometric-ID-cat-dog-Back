@@ -2,7 +2,8 @@ pipeline {
     agent any
 
     environment {
-        IMAGE = "100.97.74.126:5000/my-backend"
+        REGISTRY = "192.168.1.57:5000"
+        IMAGE = "whatthedog-back"
     }
 
     stages {
@@ -14,20 +15,20 @@ pipeline {
 
         stage('Build Image') {
             steps {
-                sh 'docker build -t $IMAGE:latest .'
+                sh 'docker build -t $REGISTRY/$IMAGE:latest .'
             }
         }
 
         stage('Push Image') {
             steps {
-                sh 'docker push $IMAGE:latest'
+                sh 'docker push $REGISTRY/$IMAGE:latest'
             }
         }
 
         stage('Deploy') {
             steps {
                 sh 'KUBECONFIG=/var/jenkins_home/.kube/config kubectl apply -f deployment.yaml'
-                sh 'KUBECONFIG=/var/jenkins_home/.kube/config kubectl rollout restart deployment whatthedog-back'
+                sh 'KUBECONFIG=/var/jenkins_home/.kube/config kubectl delete pod -l app=whatthedog-back'
             }
         }
     }
