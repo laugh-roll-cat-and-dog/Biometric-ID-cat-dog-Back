@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE = "100.97.74.126:5000/whatthedog-back:latest"
+        IMAGE = "100.97.74.126:5000/my-backend"
     }
 
     stages {
@@ -27,7 +27,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh 'KUBECONFIG=/var/jenkins_home/.kube/config kubectl apply -f deployment.yaml'
-                sh 'KUBECONFIG=/var/jenkins_home/.kube/config kubectl rollout restart deployment backend'
+                sh 'KUBECONFIG=/var/jenkins_home/.kube/config kubectl rollout restart deployment whatthedog-back'
             }
         }
     }
