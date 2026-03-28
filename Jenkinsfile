@@ -2,34 +2,32 @@ pipeline {
     agent any
 
     environment {
-        REGISTRY = "192.168.1.57:5000"
-        IMAGE = "whatthedog-back"
+        IMAGE = "192.168.1.57:5000/my-backend"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                deleteDir()
                 git branch: 'main', url: 'https://github.com/laugh-roll-cat-and-dog/Biometric-ID-cat-dog-Back.git'
             }
         }
 
         stage('Build Image') {
             steps {
-                sh 'docker build -t $REGISTRY/$IMAGE:latest .'
+                sh 'docker build -t $IMAGE:latest .'
             }
         }
 
         stage('Push Image') {
             steps {
-                sh 'docker push $REGISTRY/$IMAGE:latest'
+                sh 'docker push $IMAGE:latest'
             }
         }
 
         stage('Deploy') {
             steps {
                 sh 'KUBECONFIG=/var/jenkins_home/.kube/config kubectl apply -f deployment.yaml'
-                sh 'KUBECONFIG=/var/jenkins_home/.kube/config kubectl delete pod -l app=whatthedog-back'
+                sh 'KUBECONFIG=/var/jenkins_home/.kube/config kubectl rollout restart deployment whatthedog-back'
             }
         }
     }
