@@ -2,15 +2,15 @@
 
 A FastAPI-based backend service for managing dog photos and biometric identification.
 
-## Threshold is in searchbyinage.py line 116
-
 ## Project Structure
 
 ```
 .
 ├── app/
 │   ├── __init__.py
-│   ├── config/
+│   ├── c
+
+uvicorn main:app --host 0.0.0.0 --port 8000 --reloadonfig/
 │   │   ├── __init__.py
 │   │   ├── settings.py       # Application settings and configuration
 │   │   └── database.py       # Database connection setup

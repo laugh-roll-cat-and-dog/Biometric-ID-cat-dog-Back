@@ -45,11 +45,11 @@ async def upload_photo(
             dog_record = existing_dog
             print(f"[INFO] Using existing dog record with ID: {dog_record.id}")
         else:
-            if not all([name, breed, age is not None, description is not None]):
-                raise HTTPException(
-                    status_code=422,
-                    detail="name, breed, age, description are required when dog_id is not provided"
-                )
+            # if not all([name, breed, age is not None, description is not None]):
+            #     raise HTTPException(
+            #         status_code=422,
+            #         detail="name, breed, age, description are required when dog_id is not provided"
+            #     )
             dog_record = Dog(
                 name=name,
                 breed=breed,
@@ -150,6 +150,10 @@ async def upload_photo(
                 "photo_id": new_photo.id
             })
 
+    except HTTPException as e:
+        db.rollback()
+        print(f"[ERROR] Request error: {str(e)}")
+        raise e
     except Exception as e:
         db.rollback()
         print(f"[ERROR] Database error: {str(e)}")

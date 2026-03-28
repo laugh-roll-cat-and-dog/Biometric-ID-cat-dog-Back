@@ -20,6 +20,23 @@ wheels/
 .installed.cfg
 *.egg
 ai/
+data.py
+gallery.py
+gallery_2.py
+gallery_3.py
+gallery_single_test.py
+gallery_2_single_test.py
+gallery_3_single_test.py
+gallery_average_test.py
+gallery_2_average_test.py  
+gallery_3_average_test.py
+API_DIAGRAMS.md
+
+
+gallery_data/
+gallery_data_2/
+gallery_data_2_2/
+gallery_data_3/
 
 # Virtual Environment
 .venv/
@@ -51,3 +68,4 @@ uploads/
 # Database
 *.db
 *.sqlite
+
