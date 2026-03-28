@@ -26,11 +26,8 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh '''
-                export KUBECONFIG=/root/.kube/config
-                kubectl apply -f deployment.yaml
-                kubectl rollout restart deployment backend
-                '''
+                sh 'KUBECONFIG=/var/jenkins_home/.kube/config kubectl apply -f deployment.yaml'
+                sh 'KUBECONFIG=/var/jenkins_home/.kube/config kubectl rollout restart deployment backend'
             }
         }
     }
