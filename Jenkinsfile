@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE = "100.97.74.126:5000/my-backend"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://your-repo-url.git'
+            }
+        }
+
+        stage('Build Image') {
+            steps {
+                sh 'docker build -t $IMAGE:latest .'
+            }
+        }
+
+        stage('Push Image') {
+            steps {
+                sh 'docker push $IMAGE:latest'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh 'kubectl apply -f deployment.yaml'
+                sh 'kubectl apply -f service.yaml'
+                sh 'kubectl rollout restart deployment backend'
+            }
+        }
+    }
+}

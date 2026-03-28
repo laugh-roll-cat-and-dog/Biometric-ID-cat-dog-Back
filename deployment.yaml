@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: whatthedog-back
+  labels:
+    app: whatthedog-back
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: whatthedog-back
+  template:
+    metadata:
+      labels:
+        app: whatthedog-back
+    spec:
+      containers:
+        - name: api
+          image: 100.97.74.126:5000/whatthedog-back:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 20
+            periodSeconds: 20
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: whatthedog-back-service
+spec:
+  type: NodePort
+  selector:
+    app: whatthedog-back
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8000
+      nodePort: 30007
