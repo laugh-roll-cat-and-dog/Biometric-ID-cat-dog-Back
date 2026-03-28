@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE = "192.168.1.57:5000/my-backend"
+        IMAGE = "192.168.1.57:5000/whatthedog-back"
     }
 
     stages {
