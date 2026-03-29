@@ -6,15 +6,11 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'main', url: 'https://github.com/laugh-roll-cat-and-dog/Biometric-ID-cat-dog-Back.git'
-            }
-        }
+
 
         stage('Build Image') {
             steps {
-                sh 'docker build -t $IMAGE:latest .'
+                sh 'docker build --no-cache -t $IMAGE:latest .'
             }
         }
 
