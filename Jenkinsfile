@@ -6,7 +6,18 @@ pipeline {
     }
 
     stages {
-
+        stage('Checkout Latest Code') {
+            steps {
+                // Ensures we always fetch the latest main branch
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: '*/main']],
+                    doGenerateSubmoduleConfigurations: false,
+                    extensions: [[$class: 'WipeWorkspace']], // clean old workspace
+                    userRemoteConfigs: [[url: 'https://github.com/laugh-roll-cat-and-dog/Biometric-ID-cat-dog-Back.git']]
+                ])
+            }
+        }
 
         stage('Build Image') {
             steps {
