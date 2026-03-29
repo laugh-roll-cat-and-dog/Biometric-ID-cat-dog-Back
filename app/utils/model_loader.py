@@ -29,4 +29,4 @@ def load_convnext_checkpoint_compat(model, checkpoint_path):
         checkpoint = new_checkpoint
     
     # Load with strict=False to tolerate minor architecture differences
-    model.load_state_dict(checkpoint, strict=False)
+    model.load_state_dict(checkpoint)
