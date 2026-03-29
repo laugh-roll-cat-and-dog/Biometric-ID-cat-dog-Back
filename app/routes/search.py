@@ -19,6 +19,18 @@ import os
 router = APIRouter()
 
 
+def _to_uri(path_value: str | None) -> str | None:
+    """Convert local file paths to URI format while leaving existing URIs unchanged."""
+    if not path_value:
+        return None
+    if "://" in path_value:
+        return path_value
+    try:
+        return Path(path_value).resolve().as_uri()
+    except Exception:
+        return path_value
+
+
 class SearchRequest(BaseModel):
     query: str
     search_mode: str
@@ -63,7 +75,7 @@ async def search(request: SearchRequest):
             images = [
                 {
                     "filename": photo.filename,
-                    "path": photo.file_path,
+                    "path": _to_uri(photo.file_path),
                     "photo_id": photo.id
                 }
                 for photo in photos
