@@ -8,7 +8,7 @@ import os
 
 def embed_image(image):
     model = Network_ConvNext('dino', 'sb')
-    load_convnext_checkpoint_compat(model, "/home/mon/ai/dino_main_50_class.pt")
+    load_convnext_checkpoint_compat(model, "./app/ai/dino_main_50_class.pt")
     model.eval()
 
     gallery_transforms = transforms.Compose([
