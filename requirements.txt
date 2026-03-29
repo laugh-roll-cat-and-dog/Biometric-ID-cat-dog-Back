@@ -10,3 +10,4 @@ torchvision
 transformers
 opencv-python
 pgvector
+accelerate

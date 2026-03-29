@@ -24,7 +24,7 @@ pipeline {
         stage('Build Image') {
             steps {
                 // Pass HF token as build arg to Docker
-                sh 'docker build --no-cache --build-arg HF_TOKEN=$HF_TOKEN -t $IMAGE:latest .'
+                sh 'docker build --build-arg HF_TOKEN=$HF_TOKEN -t $IMAGE:latest .'
             }
         }
 
