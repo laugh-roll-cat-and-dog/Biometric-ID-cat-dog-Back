@@ -27,7 +27,6 @@ spec:
               port: 8000
             initialDelaySeconds: 10
             periodSeconds: 10
-
           livenessProbe:
             httpGet:
               path: /health
@@ -36,7 +35,7 @@ spec:
             periodSeconds: 20
           volumeMounts:
             - name: ai-models
-              mountPath: /home/mon/ai
+              mountPath: /app/app/ai
               readOnly: true
       volumes:
         - name: ai-models
