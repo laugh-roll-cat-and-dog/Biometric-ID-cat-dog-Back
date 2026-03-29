@@ -34,6 +34,15 @@ spec:
               port: 8000
             initialDelaySeconds: 20
             periodSeconds: 20
+          volumeMounts:
+            - name: ai-models
+              mountPath: /home/mon/ai
+              readOnly: true
+      volumes:
+        - name: ai-models
+          hostPath:
+            path: /home/mon/ai
+            type: Directory
 
 ---
 apiVersion: v1
