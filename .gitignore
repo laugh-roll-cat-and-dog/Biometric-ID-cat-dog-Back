@@ -69,3 +69,5 @@ uploads/
 *.db
 *.sqlite
 
+
+/app/ai/
