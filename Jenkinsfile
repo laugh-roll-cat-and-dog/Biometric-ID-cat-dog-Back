@@ -3,6 +3,8 @@ pipeline {
 
     environment {
         IMAGE = "192.168.1.57:5000/whatthedog-back"
+        // Inject HF token from Jenkins credentials
+        HF_TOKEN = credentials('HF_TOKEN')
     }
 
     stages {
@@ -21,7 +23,8 @@ pipeline {
 
         stage('Build Image') {
             steps {
-                sh 'docker build --no-cache -t $IMAGE:latest .'
+                // Pass HF token as build arg to Docker
+                sh 'docker build --no-cache --build-arg HF_TOKEN=$HF_TOKEN -t $IMAGE:latest .'
             }
         }
 
