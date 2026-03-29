@@ -38,8 +38,8 @@ RUN pip install --no-cache-dir -r requirements.txt accelerate
 # Copy project files
 # ---------------------------
 COPY . .
-COPY /home/mon/ai/dino_main_50_class.pt ./app/ai/dino_main_50_class.pt
-COPY /home/mon/ai/yolo.pt ./app/ai/yolo.pt
+# COPY /home/mon/ai/dino_main_50_class.pt ./app/ai/dino_main_50_class.pt
+# COPY /home/mon/ai/yolo.pt ./app/ai/yolo.pt
 
 # ---------------------------
 # Pre-login to Hugging Face (optional)

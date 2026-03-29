@@ -7,7 +7,7 @@ import os
 
 def embed_image(image):
     model = Network_ConvNext('dino', 'sb')
-    model.load_state_dict(torch.load(f"./app/ai/whatTheDog-backend/app/ai/dino_main_50_class.pt", map_location=torch.device('cpu')))
+    model.load_state_dict(torch.load(f"./app/ai/dino_main_50_class.pt", map_location=torch.device('cpu')))
     model.eval()
 
     gallery_transforms = transforms.Compose([
