@@ -135,7 +135,7 @@ async def search_by_image(image: UploadFile = File(...)) -> JSONResponse:
                 dog_similarities[dog_id].append(result)
             
             # Calculate average similarity for each dog and filter by threshold
-            threshold = 0.7087
+            threshold = 0.7096
             filtered_dogs = []
             
             for dog_id, dog_results in dog_similarities.items():
