@@ -14,6 +14,7 @@ import torchvision.transforms as transforms
 from PIL import Image
 from torch.utils.data import Dataset, DataLoader
 from ..network.network import Network_ConvNext
+from app.utils.model_loader import load_convnext_checkpoint_compat
 import os
 
 
@@ -54,7 +55,7 @@ async def search_by_image(image: UploadFile = File(...)) -> JSONResponse:
         
         # Load model
         model = Network_ConvNext('dino', 'sb')
-        model.load_state_dict(torch.load(f"./app/ai/dino_main_50_class.pt", map_location=torch.device('cpu')))
+        load_convnext_checkpoint_compat(model, "/home/mon/ai/dino_main_50_class.pt")
         model.eval()
         
         # Prepare transforms
