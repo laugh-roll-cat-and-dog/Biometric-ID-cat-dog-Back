@@ -22,7 +22,7 @@ def crop_image(
         raise FileNotFoundError(f"Image file not found: {image_file}")
 
     # Load YOLO model
-    model_file = Path("/home/mon/ai/yolo.pt")
+    model_file = Path("/var/jenkins_home/workspace/whatTheDog-backend/app/ai/yolo.pt")
     if not model_file.is_file():
         raise FileNotFoundError(f"Invalid model path: {model_file}")
     model = YOLO(str(model_file))

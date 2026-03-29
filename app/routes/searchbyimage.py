@@ -54,7 +54,7 @@ async def search_by_image(image: UploadFile = File(...)) -> JSONResponse:
         
         # Load model
         model = Network_ConvNext('dino', 'sb')
-        model.load_state_dict(torch.load(f"/home/mon/ai/dino_main_50_class.pt", map_location=torch.device('cpu')))
+        model.load_state_dict(torch.load(f"/var/jenkins_home/workspace/whatTheDog-backend/app/ai/dino_main_50_class.pt", map_location=torch.device('cpu')))
         model.eval()
         
         # Prepare transforms
