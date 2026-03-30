@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from app.config.database import Base, engine
 from app.config.settings import settings
 from app.routes import upload_router, health_router, search_router, searchbyimage_router
+from app.utils.image_utils import IMAGE_ROOT
 
 # Create FastAPI application
 app = FastAPI(
@@ -20,6 +22,13 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+)
+
+# Mount static files for images BEFORE including routers
+app.mount(
+    "/images",
+    StaticFiles(directory=str(IMAGE_ROOT)),
+    name="images",
 )
 
 # Create database tables
