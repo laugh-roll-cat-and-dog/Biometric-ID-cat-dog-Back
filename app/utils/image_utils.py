@@ -25,7 +25,11 @@ def to_public_image_path(
             candidate = IMAGE_ROOT / f"dog_{dog_id}" / filename
             if candidate.exists():
                 return f"/images/dog_{dog_id}/{filename}"
-            return _find_by_filename(filename)
+            by_name = _find_by_filename(filename)
+            if by_name:
+                return by_name
+            # Deterministic fallback to avoid null in API response.
+            return f"/images/dog_{dog_id}/{filename}"
         return None
 
     if file_path.startswith("/images/"):
@@ -40,7 +44,11 @@ def to_public_image_path(
         if abs_path.exists():
             return f"/images/{rel}"
         if filename:
-            return _find_by_filename(filename)
+            by_name = _find_by_filename(filename)
+            if by_name:
+                return by_name
+            if dog_id is not None:
+                return f"/images/dog_{dog_id}/{filename}"
         return None
     except (ValueError, OSError):
         parts = Path(file_path).parts
@@ -55,6 +63,9 @@ def to_public_image_path(
             candidate = IMAGE_ROOT / f"dog_{dog_id}" / filename
             if candidate.exists():
                 return f"/images/dog_{dog_id}/{filename}"
-            return _find_by_filename(filename)
+            by_name = _find_by_filename(filename)
+            if by_name:
+                return by_name
+            return f"/images/dog_{dog_id}/{filename}"
 
         return None
