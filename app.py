@@ -6,35 +6,21 @@ from app.config.database import Base, engine
 from app.config.settings import settings
 from app.routes import upload_router, health_router, search_router, searchbyimage_router
 
-app = FastAPI()
 IMAGE_ROOT = Path("/srv/storage/whatthedog/Dogs image").resolve()
-app.mount("/images", StaticFiles(directory=str(IMAGE_ROOT)), name="images")
+
 
 def to_public_image_path(file_path: str | None) -> str | None:
+    """Convert file path to public image URL, preserving subdirectory structure."""
     if not file_path:
         return None
     
-    p = str(file_path)
-    if p.startswith("file://"):
-        p = p[7:]
-    
-    print(f"[DEBUG] Input file_path: {file_path}")
-    print(f"[DEBUG] Cleaned path: {p}")
-    print(f"[DEBUG] IMAGE_ROOT: {IMAGE_ROOT}")
-    
     try:
-        abs_path = Path(p).resolve()
-        print(f"[DEBUG] Resolved abs_path: {abs_path}")
-        
+        abs_path = Path(file_path).resolve()
         rel = abs_path.relative_to(IMAGE_ROOT).as_posix()
-        print(f"[DEBUG] Relative path: {rel}")
-        
-        result = f"/images/{rel}"
-        print(f"[DEBUG] Final result: {result}")
-        return result
-    except (ValueError, OSError) as e:
-        print(f"[DEBUG] Error: {e}")
+        return f"/images/{rel}"
+    except (ValueError, OSError):
         return None
+
 
 # Create FastAPI application
 app = FastAPI(
