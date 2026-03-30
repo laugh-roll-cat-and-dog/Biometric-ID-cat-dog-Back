@@ -25,6 +25,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Mount static files for images BEFORE including routers
+app.mount(
+    "/images",
+    StaticFiles(directory=str(IMAGE_ROOT)),
+    name="images",
+)
+
 # Create database tables
 Base.metadata.create_all(bind=engine)
 
@@ -33,10 +40,3 @@ app.include_router(health_router, tags=["Health"])
 app.include_router(upload_router, tags=["Upload"])
 app.include_router(search_router, tags=["Search"])
 app.include_router(searchbyimage_router, tags=["Search By Image"])
-
-# Mount static files for images
-app.mount(
-    "/images",
-    StaticFiles(directory=str(IMAGE_ROOT)),
-    name="images",
-)
