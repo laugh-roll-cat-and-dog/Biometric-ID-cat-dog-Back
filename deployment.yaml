@@ -38,7 +38,7 @@ spec:
               mountPath: /app/app/ai
               readOnly: true
             - name: dog-images
-              mountPath: /srv/storage/whatthedog/Dogs image
+              mountPath: /srv/storage/whatthedog/dog_images
               readOnly: false
       volumes:
         - name: ai-models
@@ -47,7 +47,7 @@ spec:
             type: Directory
         - name: dog-images
           hostPath:
-            path: /srv/storage/whatthedog/Dogs image
+            path: /srv/storage/whatthedog/dog_images
             type: Directory
 
 ---

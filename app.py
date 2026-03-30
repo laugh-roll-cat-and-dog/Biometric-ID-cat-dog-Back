@@ -28,7 +28,7 @@ app.add_middleware(
 # Mount static files for images BEFORE including routers
 app.mount(
     "/images",
-    StaticFiles(directory=str(IMAGE_ROOT), check_dir=False),
+    StaticFiles(directory=str(IMAGE_ROOT)),
     name="images",
 )
 

@@ -1,7 +1,7 @@
 from pathlib import Path
 
-# Image storage root directory
-IMAGE_ROOT = Path("/srv/storage/whatthedog/Dogs image").resolve()
+# Image storage root directory (using symlink without spaces to avoid StaticFiles issues)
+IMAGE_ROOT = Path("/srv/storage/whatthedog/dog_images").resolve()
 
 
 def to_public_image_path(file_path: str | None) -> str | None:
