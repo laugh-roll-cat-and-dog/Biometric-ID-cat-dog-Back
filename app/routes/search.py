@@ -68,7 +68,11 @@ async def search(request: SearchRequest):
             images = [
                 {
                     "filename": photo.filename,
-                    "path": to_public_image_path(photo.file_path),
+                    "path": to_public_image_path(
+                        photo.file_path,
+                        dog_id=dog.id,
+                        filename=photo.filename,
+                    ),
                     "photo_id": photo.id
                 }
                 for photo in photos

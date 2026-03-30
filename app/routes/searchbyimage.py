@@ -123,7 +123,11 @@ async def search_by_image(image: UploadFile = File(...)) -> JSONResponse:
                     "photo_id": photo.id,
                     "dog_id": photo.dog_id,
                     "filename": photo.filename,
-                    "file_path": to_public_image_path(photo.file_path),
+                    "file_path": to_public_image_path(
+                        photo.file_path,
+                        dog_id=photo.dog_id,
+                        filename=photo.filename,
+                    ),
                     "cropped_nose_path": to_public_image_path(photo.cropped_nose_path),
                     "similarity_score": float(similarity)
                 })
