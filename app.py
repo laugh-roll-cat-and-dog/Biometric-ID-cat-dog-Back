@@ -6,8 +6,9 @@ from app.config.database import Base, engine
 from app.config.settings import settings
 from app.routes import upload_router, health_router, search_router, searchbyimage_router
 
+app = FastAPI()
 IMAGE_ROOT = Path("/srv/storage/whatthedog/Dogs image").resolve()
-
+app.mount("/images", StaticFiles(directory=str(IMAGE_ROOT)), name="images")
 
 def to_public_image_path(file_path: str | None) -> str | None:
     """Convert file path to public image URL, preserving subdirectory structure."""
