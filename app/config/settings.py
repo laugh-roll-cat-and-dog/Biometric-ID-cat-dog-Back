@@ -1,5 +1,6 @@
 from pathlib import Path
 from typing import Optional
+import os
 
 
 class Settings:
@@ -9,7 +10,9 @@ class Settings:
     DATABASE_URL: str = "postgresql+psycopg2://postgres:246659@100.97.74.126:5432/postgres"
     
     # File Upload
-    BASE_UPLOAD_DIR: Path = Path("/Volumes/server-storage/whatthedog/Dogs image")
+    BASE_UPLOAD_DIR: Path = Path(
+        os.getenv("BASE_UPLOAD_DIR", "/srv/storage/whatthedog/dog_images")
+    )
     MAX_BYTES: int = 8 * 1024 * 1024  # 8 MB limit
     
     # API
