@@ -7,6 +7,7 @@ from app.config.database import SessionLocal
 from app.config.settings import settings
 from app.models import Dog, DogPhoto
 from app.utils.file_handler import detect_image_type, save_file
+from app import to_public_image_path
 
 import torch
 import torchvision.transforms as transforms
@@ -20,11 +21,7 @@ router = APIRouter()
 MAX_RESULTS = 3
 
 
-def _get_image_url(filename: str | None) -> str | None:
-    """Convert filename to image path served by static route."""
-    if not filename:
-        return None
-    return f"/images/{filename}"
+
 
 
 class SearchRequest(BaseModel):
@@ -71,7 +68,7 @@ async def search(request: SearchRequest):
             images = [
                 {
                     "filename": photo.filename,
-                    "path": _get_image_url(photo.filename),
+                    "path": to_public_image_path(photo.file_path),
                     "photo_id": photo.id
                 }
                 for photo in photos

@@ -7,6 +7,7 @@ from app.config.settings import settings
 from app.models import Dog, DogPhoto
 from app.utils.file_handler import detect_image_type, save_file
 from app.utils.crop import crop_image
+from app import to_public_image_path
 
 import torch
 import cv2
@@ -22,11 +23,7 @@ router = APIRouter()
 MAX_RESULTS = 3
 
 
-def _get_image_url(filename: str | None) -> str | None:
-    """Convert filename to image path served by static route."""
-    if not filename:
-        return None
-    return f"/images/{filename}"
+
 
 @router.post("/searchByImage")
 async def search_by_image(image: UploadFile = File(...)) -> JSONResponse:
@@ -126,8 +123,8 @@ async def search_by_image(image: UploadFile = File(...)) -> JSONResponse:
                     "photo_id": photo.id,
                     "dog_id": photo.dog_id,
                     "filename": photo.filename,
-                    "file_path": _get_image_url(photo.filename),
-                    "cropped_nose_path": _get_image_url(Path(photo.cropped_nose_path).name) if photo.cropped_nose_path else None,
+                    "file_path": to_public_image_path(photo.file_path),
+                    "cropped_nose_path": to_public_image_path(photo.cropped_nose_path),
                     "similarity_score": float(similarity)
                 })
             
@@ -179,7 +176,7 @@ async def search_by_image(image: UploadFile = File(...)) -> JSONResponse:
                 for result in dog_data['photos']:
                     results_by_dog[dog.id]["images"].append({
                         "filename": result["filename"],
-                        "path": _get_image_url(result["filename"]),
+                        "path": to_public_image_path(result["file_path"]),
                         "photo_id": result["photo_id"],
                         "similarity_score": result["similarity_score"]
                     })
