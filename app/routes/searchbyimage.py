@@ -176,7 +176,7 @@ async def search_by_image(image: UploadFile = File(...)) -> JSONResponse:
                 for result in dog_data['photos']:
                     results_by_dog[dog.id]["images"].append({
                         "filename": result["filename"],
-                        "path": to_public_image_path(result["file_path"]),
+                        "path": result["file_path"],
                         "photo_id": result["photo_id"],
                         "similarity_score": result["similarity_score"]
                     })
