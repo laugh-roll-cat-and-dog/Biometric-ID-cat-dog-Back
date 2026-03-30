@@ -7,7 +7,7 @@ from app.config.database import SessionLocal
 from app.config.settings import settings
 from app.models import Dog, DogPhoto
 from app.utils.file_handler import detect_image_type, save_file
-from app import to_public_image_path
+from app.utils.image_utils import to_public_image_path
 
 import torch
 import torchvision.transforms as transforms
