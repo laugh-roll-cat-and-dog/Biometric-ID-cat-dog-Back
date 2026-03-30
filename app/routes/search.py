@@ -17,18 +17,14 @@ import os
 
 
 router = APIRouter()
+MAX_RESULTS = 3
 
 
-def _to_uri(path_value: str | None) -> str | None:
-    """Convert local file paths to URI format while leaving existing URIs unchanged."""
-    if not path_value:
+def _get_image_url(filename: str | None) -> str | None:
+    """Convert filename to image path served by static route."""
+    if not filename:
         return None
-    if "://" in path_value:
-        return path_value
-    try:
-        return Path(path_value).resolve().as_uri()
-    except Exception:
-        return path_value
+    return f"/images/{filename}"
 
 
 class SearchRequest(BaseModel):
@@ -75,7 +71,7 @@ async def search(request: SearchRequest):
             images = [
                 {
                     "filename": photo.filename,
-                    "path": _to_uri(photo.file_path),
+                    "path": _get_image_url(photo.filename),
                     "photo_id": photo.id
                 }
                 for photo in photos
@@ -91,14 +87,16 @@ async def search(request: SearchRequest):
             }
             dog_list.append(dog_data)
         
+        limited_dog_list = dog_list[:MAX_RESULTS]
+
         return JSONResponse(
             status_code=200,
             content={
                 "message": "Search completed",
                 "query": query,
                 "search_column": search_mode,
-                "results": dog_list,
-                "count": len(dog_list)
+                "results": limited_dog_list,
+                "count": len(limited_dog_list)
             }
         )
     except AttributeError:

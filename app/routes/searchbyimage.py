@@ -19,18 +19,14 @@ import os
 
 
 router = APIRouter()
+MAX_RESULTS = 3
 
 
-def _to_uri(path_value: str | None) -> str | None:
-    """Convert local file paths to URI format while leaving existing URIs unchanged."""
-    if not path_value:
+def _get_image_url(filename: str | None) -> str | None:
+    """Convert filename to image path served by static route."""
+    if not filename:
         return None
-    if "://" in path_value:
-        return path_value
-    try:
-        return Path(path_value).resolve().as_uri()
-    except Exception:
-        return path_value
+    return f"/images/{filename}"
 
 @router.post("/searchByImage")
 async def search_by_image(image: UploadFile = File(...)) -> JSONResponse:
@@ -130,8 +126,8 @@ async def search_by_image(image: UploadFile = File(...)) -> JSONResponse:
                     "photo_id": photo.id,
                     "dog_id": photo.dog_id,
                     "filename": photo.filename,
-                    "file_path": _to_uri(photo.file_path),
-                    "cropped_nose_path": _to_uri(photo.cropped_nose_path),
+                    "file_path": _get_image_url(photo.filename),
+                    "cropped_nose_path": _get_image_url(Path(photo.cropped_nose_path).name) if photo.cropped_nose_path else None,
                     "similarity_score": float(similarity)
                 })
             
@@ -183,12 +179,12 @@ async def search_by_image(image: UploadFile = File(...)) -> JSONResponse:
                 for result in dog_data['photos']:
                     results_by_dog[dog.id]["images"].append({
                         "filename": result["filename"],
-                        "path": result["file_path"],
+                        "path": _get_image_url(result["filename"]),
                         "photo_id": result["photo_id"],
                         "similarity_score": result["similarity_score"]
                     })
 
-            results_list = list(results_by_dog.values())
+            results_list = list(results_by_dog.values())[:MAX_RESULTS]
             response_data = {
                 "message": "Search completed",
                 "query": str(filtered_dogs[0]["dog_id"]) if filtered_dogs else "",
