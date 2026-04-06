@@ -4,30 +4,50 @@ A FastAPI-based backend service for managing dog photos and biometric identifica
 
 ## Project Structure
 
-```
+```text
 .
+├── .gitignore
+├── Dockerfile
+├── Jenkinsfile
+├── README.md
 ├── app/
 │   ├── __init__.py
-│   ├── c
-
-uvicorn main:app --host 0.0.0.0 --port 8000 --reloadonfig/
+│   ├── attention/
+│   │   ├── BAM.py
+│   │   ├── DAM.py
+│   │   ├── SAM.py
+│   │   └── SEblock.py
+│   ├── config/
 │   │   ├── __init__.py
-│   │   ├── settings.py       # Application settings and configuration
-│   │   └── database.py       # Database connection setup
+│   │   ├── database.py
+│   │   └── settings.py
 │   ├── models/
 │   │   ├── __init__.py
-│   │   ├── dog.py           # Dog model
-│   │   └── dog_photo.py     # DogPhoto model
+│   │   ├── dog.py
+│   │   └── dog_photo.py
+│   ├── network/
+│   │   └── network.py
 │   ├── routes/
 │   │   ├── __init__.py
-│   │   ├── health.py        # Health check endpoints
-│   │   └── upload.py        # Photo upload endpoints
+│   │   ├── health.py
+│   │   ├── search.py
+│   │   ├── searchbyimage.py
+│   │   └── upload.py
 │   └── utils/
 │       ├── __init__.py
-│       └── file_handler.py  # File handling utilities
-├── main.py                  # Main application entry point
-├── requirements.txt         # Python dependencies
-└── README.md               # This file
+│       ├── crop.py
+│       ├── embedding.py
+│       ├── file_handler.py
+│       ├── image_utils.py
+│       └── model_loader.py
+├── app.py
+├── cam_result.png
+├── cam_utils.py
+├── deployment.yaml
+├── docker-compose.yml
+├── init.sql
+├── main.py
+└── requirements.txt
 ```
 
 ## Features
