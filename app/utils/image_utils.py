@@ -1,7 +1,7 @@
 from pathlib import Path
 
 # Image storage root directory (using symlink without spaces to avoid StaticFiles issues)
-IMAGE_ROOT = Path("/srv/storage/whatthedog/dog_images").resolve()
+IMAGE_ROOT = Path("/Users/withwws/Desktop/testpro").resolve()
 
 
 def _find_by_filename(filename: str) -> str | None:

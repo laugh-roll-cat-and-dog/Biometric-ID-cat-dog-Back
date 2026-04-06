@@ -32,7 +32,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install Python dependencies
 # ---------------------------
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt accelerate
+RUN pip install --no-cache-dir -r requirements.txt 
 
 # ---------------------------
 # Copy project files
@@ -44,7 +44,7 @@ COPY . .
 # ---------------------------
 # Pre-login to Hugging Face (optional)
 # ---------------------------
-RUN python -c "from huggingface_hub import login; import os; login(os.environ['HUGGINGFACE_HUB_TOKEN'])"
+RUN test -n "$HUGGINGFACE_HUB_TOKEN" && hf auth login --token "$HUGGINGFACE_HUB_TOKEN"
 
 # ---------------------------
 # Expose port for FastAPI/Uvicorn

@@ -7,11 +7,14 @@ class Settings:
     """Application settings and configuration"""
     
     # Database
-    DATABASE_URL: str = "postgresql+psycopg2://postgres:246659@100.97.74.126:5432/postgres"
+    DATABASE_URL: str = os.getenv(
+        "DATABASE_URL",
+        "postgresql+psycopg2://postgres:246659@localhost:5432/postgres"
+    )
     
     # File Upload
     BASE_UPLOAD_DIR: Path = Path(
-        os.getenv("BASE_UPLOAD_DIR", "/srv/storage/whatthedog/dog_images")
+        os.getenv("BASE_UPLOAD_DIR", "/Users/withwws/Desktop/testpro")
     )
     MAX_BYTES: int = 8 * 1024 * 1024  # 8 MB limit
     
